@@ -7,7 +7,10 @@ project(houghLine)
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
-find_package(OpenCV REQUIRED)
+find_package(catkin REQUIRED COMPONENTS
+  OpenCV
+  roscpp
+)
 
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
@@ -101,7 +104,7 @@ find_package(OpenCV REQUIRED)
 catkin_package(
 #  INCLUDE_DIRS include
 #  LIBRARIES houghLine
-#  CATKIN_DEPENDS OpenCV
+#  CATKIN_DEPENDS OpenCV roscpp
 #  DEPENDS system_lib
 )
 
@@ -113,7 +116,7 @@ catkin_package(
 ## Your package locations should be listed before other locations
 include_directories(
 # include
-  ${OpenCV_INCLUDE_DIRS}
+  ${catkin_INCLUDE_DIRS}
 )
 
 ## Declare a C++ library
@@ -193,6 +196,7 @@ include_directories(
 
 ## Add folders to be run by python nosetests
 # catkin_add_nosetests(test)
+
 
 add_executable( task src/task.cpp )
 target_link_libraries( task ${OpenCV_LIBS} )

@@ -2,31 +2,42 @@
 
 using namespace cv;
 
-Mat src,hsv,gray;
+Mat src,hsv,thresh,blur;
 int h=0,s=0,v=0;
-int mh=255,ns=255,mv=255;
+int mh=255,ms=255,mv=255;
+
+void createtrackbar()
+{
+	namedWindow("threshold");
+	createTrackbar("h","threshsold",&h,255,NULL);
+	createTrackbar("mh","threshsold",&mh,255,NULL);
+	createTrackbar("s","threshsold",&s,255,NULL);
+	createTrackbar("ms","threshsold",&ms,255,NULL);
+	createTrackbar("v","threshsold",&v,255,NULL);
+	createTrackbar("mv","threshsold",&mv,255,NULL);
+}
 
 void show(){
 	imshow("original", src);
-	imshow("hsv image" ,hsv);
-	imshow("gray scale image", hsv);
-};
-
-/*void perform(){
-
+	imshow("blur" ,blur);
+	imshow("threshold",thresh);
 }
-*/
 
-int main(int argc int **argv)
+void perform(){
+	
+        cvtColor(src, hsv, CV_BGR2HSV);
+	blur(hsv, blur, Size(10,10));
+	inRange(blur, Scalar(h, s, v), Scalar(mh, ms, mv), thresh);
+}
+
+int main(int argc, char **argv)
 {
 	VideoCapture cap(argv[1]);
 
 	if (!cap.isOpened())
 		return -1;
-	else{
-		cvtColor(cap, gray, CV_BGR2GRAY);
-		cvtColor(cap, hsv, CV_BGR2HSV);
-	}
+
+	createtrackbar();
 
 	while (cap.isOpened())
 	{
@@ -34,11 +45,7 @@ int main(int argc int **argv)
 
 		if (src.empty())
 			break;
-		else{
-			//createtrackbar();
-			//perform();
-			show();
-		}
+
 	
 		int k=waitKey(10);
 
@@ -46,14 +53,14 @@ int main(int argc int **argv)
 			while((k=waitKey(10)) != ' ')
 			{
 				if (k=='q')	return 0;
-				//perform();
+				perform();
 				show();
 			}
 
 		else if(k=='q')
 			return 0;
 
-		//perform();
+		perform();
 		show();
 	}
 }
